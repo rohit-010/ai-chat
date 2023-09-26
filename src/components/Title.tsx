@@ -12,7 +12,9 @@ function Title({ setMessages }: Props) {
   const resetConversation = async () => {
     setIsResetting(true);
     try {
-      const response = await axios.get('http://localhost:8000/reset');
+      const response = await axios.get(
+        'https://ai-chat-node-backend.onrender.com/reset'
+      );
       if (response.status == 200) {
         setMessages([]);
       } else {

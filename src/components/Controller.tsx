@@ -3,12 +3,15 @@ import Title from './Title';
 import RecordMessage from './RecordMessage';
 import axios from 'axios';
 
+const BACKEND_API_CALL = 'https://ai-chat-node-backend.onrender.com/post-audio';
+
 function Controller() {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
 
   const createBlobUrl = (data: any) => {
     const blob = new Blob([data], { type: 'audio/mpeg' });
+    // const blob = new Blob([data], { type: 'audio/flac' });
     const url = window.URL.createObjectURL(blob);
     return url;
   };
@@ -30,16 +33,20 @@ function Controller() {
 
         // Send form data to api endpoint
         axios
-          .post('http://localhost:8000/post-audio', formData, {
+          .post(BACKEND_API_CALL, formData, {
             headers: {
               'Content-Type': 'audio.mpeg',
             },
             responseType: 'arraybuffer',
           })
           .then((res: any) => {
+            console.log(' response from backend', res);
             const blob = res.data;
+            console.log(' client converted blob', blob);
             const audio = new Audio();
+            console.log(' client converted audio', audio);
             audio.src = createBlobUrl(blob);
+            console.log(' client converted blob url', audio.src);
 
             //Append to audio
             const rachelMessage = { sender: 'rachel', blobUrl: audio.src };
@@ -106,7 +113,7 @@ function Controller() {
           )}
         </div>
         {/* Recorder */}
-        <div className="fixed bottom-0 w-full py-6 border-t text-center bg-gradient-to-r from-sky-500 to-green-500">
+        <div className="fixed bottom-0 w-full py-6 border-t text-center bg-gradient-to-r from-violet-500 to-pink-500">
           <div className="flex justify-center items-center w-full">
             <RecordMessage handleStop={handleStop} />
           </div>
