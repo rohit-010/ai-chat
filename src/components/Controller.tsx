@@ -27,40 +27,43 @@ function Controller() {
     fetch(blobUrl)
       .then((res) => res.blob())
       .then(async (blob) => {
-        //Construct audio to send file
-        const formData = new FormData();
-        formData.append('file', blob, 'myFile.wav');
+        console.log('blob ', blob);
+        if (blob.size > 0) {
+          //Construct audio to send file
+          const formData = new FormData();
+          formData.append('file', blob, 'myFile.wav');
 
-        // Send form data to api endpoint
-        axios
-          .post(BACKEND_API_CALL, formData, {
-            headers: {
-              'Content-Type': 'audio.mpeg',
-            },
-            responseType: 'arraybuffer',
-          })
-          .then((res: any) => {
-            console.log(' response from backend', res);
-            const blob = res.data;
-            console.log(' client converted blob', blob);
-            const audio = new Audio();
-            console.log(' client converted audio', audio);
-            audio.src = createBlobUrl(blob);
-            console.log(' client converted blob url', audio.src);
+          // Send form data to api endpoint
+          axios
+            .post(BACKEND_API_CALL, formData, {
+              headers: {
+                'Content-Type': 'audio.mpeg',
+              },
+              responseType: 'arraybuffer',
+            })
+            .then((res: any) => {
+              console.log(' response from backend', res);
+              const blob = res.data;
+              console.log(' client converted blob', blob);
+              const audio = new Audio();
+              console.log(' client converted audio', audio);
+              audio.src = createBlobUrl(blob);
+              console.log(' client converted blob url', audio.src);
 
-            //Append to audio
-            const rachelMessage = { sender: 'rachel', blobUrl: audio.src };
-            messagesArr.push(rachelMessage);
-            setMessages(messagesArr);
+              //Append to audio
+              const rachelMessage = { sender: 'rachel', blobUrl: audio.src };
+              messagesArr.push(rachelMessage);
+              setMessages(messagesArr);
 
-            // Play Audio
-            setIsLoading(false);
-            audio.play();
-          })
-          .catch((err) => {
-            console.error(err.message);
-            setIsLoading(false);
-          });
+              // Play Audio
+              setIsLoading(false);
+              audio.play();
+            })
+            .catch((err) => {
+              console.error(err.message);
+              setIsLoading(false);
+            });
+        }
       });
   };
 
